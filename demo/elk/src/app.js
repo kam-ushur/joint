@@ -2,22 +2,24 @@ import * as joint from '../../../build/joint';
 import ELK from 'elkjs/lib/elk-api.js';
 import elkWorker from 'elkjs/lib/elk-worker.js';
 import { Child, Label, Edge } from './shapes';
-import elkGraph from '../elkGraph.json';
+import elkGraph from '../elkGraphGen.json';
+// import elkGraph from '../elkGraphAccDir.json';
 
 const fullViewThreshold = 0.7;
 const minimalViewThreshold = 0.4;
 
+let graph;
 export const init = () => {
     const canvas = document.getElementById('canvas');
 
-    const graph = new joint.dia.Graph();
+    graph = new joint.dia.Graph();
 
     const paper = new joint.dia.Paper({
         model: graph,
         width: 1000,
         height: 600,
         gridSize: 1,
-        interactive: false,
+        interactive: true,
         async: true,
         frozen: true,
         sorting: joint.dia.Paper.sorting.APPROX,
@@ -163,6 +165,7 @@ export const init = () => {
             const sourceElementId = mapPortIdToShapeId[sourcePortId];
             const targetElementId = mapPortIdToShapeId[targetPortId];
 
+            // console.log("OK bend points are ", JSON.stringify(bendPoints, null, 4));
             const shape = new Edge({
                 source: {
                     id: sourceElementId,
@@ -186,6 +189,7 @@ export const init = () => {
         addChildren(children);
         addEdges(edges);
 
+        console.log("JSON ", JSON.stringify(graph.toJSON(), null, 4));
         paper.unfreeze();
         paper.fitToContent({ useModelGeometry: true, padding: 100, allowNewOrigin: 'any' });
     });
